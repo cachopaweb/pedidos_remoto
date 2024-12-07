@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pedidos_remoto/app/widgets/card_finalizar_pedido_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/carinho_controller.dart';

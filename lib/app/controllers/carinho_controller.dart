@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:pedidos_remoto/app/models/catalogo/produto_model.dart';
+import 'package:pedidos_remoto/app/models/cliente_model.dart';
+import 'package:pedidos_remoto/app/models/tipo_pgm_model.dart';
 
 import '../models/itens_carrinho.dart';
 import '../models/itens_pedido.dart';
@@ -127,18 +129,26 @@ class CarrinhoController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> inserePedido(UsuarioLogado usuarioLogado) async {
+  Future<bool> inserePedido(
+    UsuarioLogado usuarioLogado,
+    ClienteModel cliente,
+    String enderecoEntrega,
+    TipoPgmModel tipoPgm,
+    bool emitirNF,
+  ) async {
     var itens = <ItensPedido>[];
 
     final total = valorTotal;
     var pedidoModel = PedidoModel(
-      cli: 1,
-      enderecoEntrega: 'TESTE',
-      formasPagamento: 'DINHEIRO',
+      cli: cliente.codigo,
+      enderecoEntrega: enderecoEntrega,
+      formasPagamento: tipoPgm.descricao,
       data: DateTime.now(),
       fun: usuarioLogado.codigo,
-      status: 'ENVIADO',
+      status: 'ABERTO',
       valor: total,
+      tipoPgm: tipoPgm.codigo,
+      emitirNF: emitirNF == true ? 'S' : 'N',
     );
 
     final pedido = await pedidoRepository.inserePedido(pedidoModel);

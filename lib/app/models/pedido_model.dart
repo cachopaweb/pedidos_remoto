@@ -13,6 +13,8 @@ class PedidoModel {
   DateTime? data;
   double? valor;
   String? motivoRecusa;
+  int? tipoPgm;
+  String? emitirNF;
   List<ItensPedido>? itensPedido;
 
   PedidoModel({
@@ -27,6 +29,8 @@ class PedidoModel {
     this.valor,
     this.motivoRecusa,
     this.itensPedido,
+    this.tipoPgm,
+    this.emitirNF,
   });
 
   factory PedidoModel.fromMap(Map<String, dynamic> data) => PedidoModel(
@@ -40,6 +44,8 @@ class PedidoModel {
         data: DateTime.parse(data['data']) as DateTime?,
         valor: data['valor'] as double?,
         motivoRecusa: data['motivo_recusa'] as String?,
+        tipoPgm: data['tipoPgm'] as int?,
+        emitirNF: data['emitirNF'] as String?,
         itensPedido: (data['itensPedido'] as List<dynamic>?)
             ?.map((e) => ItensPedido.fromMap(e as Map<String, dynamic>))
             .toList(),
@@ -56,6 +62,8 @@ class PedidoModel {
         'data': data!.toIso8601String(),
         'valor': valor,
         'motivo_recusa': motivoRecusa,
+        'tipoPgm': tipoPgm,
+        'emitirNF': emitirNF,
         'itensPedido': itensPedido,
       };
 

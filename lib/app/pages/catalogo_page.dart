@@ -159,11 +159,31 @@ class DataTablePedido extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
           child: DataTable(
-            columns: const [
-              DataColumn(label: Expanded(child: Text('Nome'))),
-              DataColumn(label: Expanded(child: Text('Vlr Unit'))),
-              DataColumn(label: Expanded(child: Text('Total'))),
-              DataColumn(label: Expanded(child: Text('Açôes'))),
+            columns: [
+              DataColumn(
+                  label: Expanded(
+                      child: Text(
+                'Nome',
+                style: AppTextStyles.textBodyBold,
+              ))),
+              DataColumn(
+                  label: Expanded(
+                      child: Text(
+                'Vlr Unit',
+                style: AppTextStyles.textBodyBold,
+              ))),
+              DataColumn(
+                  label: Expanded(
+                      child: Text(
+                'Total',
+                style: AppTextStyles.textBodyBold,
+              ))),
+              DataColumn(
+                  label: Expanded(
+                      child: Text(
+                'Açôes',
+                style: AppTextStyles.textBodyBold,
+              ))),
             ],
             rows: listaItensCatalogo.map(
               (catalogo) {

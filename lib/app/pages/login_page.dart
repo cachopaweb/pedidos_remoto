@@ -28,19 +28,16 @@ class LoginPageState extends State<LoginPage> {
   final txtUsuarioController = TextEditingController(text: '');
   final txtSenhaController = TextEditingController(text: '');
   final String version = '1.0.0';
-  String phoneId = '';
   var tentandoLogar = false;
   bool idIsVisible = false;
 
   _setarInputs() async {
     var usuario = await localStorage.get('usuario') ?? '';
     var senha = await localStorage.get('senha') ?? '';
-    phoneId = await localStorage.get('id') ?? '';
     setState(() {
-      idIsVisible = phoneId.isEmpty;
+      txtUsuarioController.text = usuario;
+      txtSenhaController.text = senha;
     });
-    txtUsuarioController.text = usuario;
-    txtSenhaController.text = senha;
   }
 
   @override
@@ -89,7 +86,6 @@ class LoginPageState extends State<LoginPage> {
       final usuario = await controller.logar(
         txtUsuarioController.text,
         txtSenhaController.text,
-        phoneId,
       );
 
       if (!mounted) return; // Guard against widget being disposed
@@ -101,7 +97,6 @@ class LoginPageState extends State<LoginPage> {
       if (usuario.codigo > 0) {
         localStorage.put("usuario", txtUsuarioController.text);
         localStorage.put("senha", txtSenhaController.text);
-        localStorage.put("id", phoneId);
         navigator.pushReplacementNamed('/catalogo');
       }
     } catch (e) {
@@ -113,10 +108,6 @@ class LoginPageState extends State<LoginPage> {
           idIsVisible = true;
         }
       });
-
-      if (e is ExceptionCelularNaoPermitido) {
-        localStorage.remove(phoneId);
-      }
 
       scaffoldMessenger.showSnackBar(SnackBar(
         content: Text(e is Exception ? e.toString() : 'Erro ao fazer login'),

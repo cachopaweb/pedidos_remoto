@@ -6,8 +6,7 @@ import '../controllers/config_controller.dart';
 import '../models/usuario_logado.dart';
 
 class LoginRepository {
-  Future<UsuarioLogado> handleLogin(
-      String usuario, String senha, String fone) async {
+  Future<UsuarioLogado> handleLogin(String usuario, String senha) async {
     if (usuario.contains('test') && senha.contains('123')) {
       return UsuarioLogado(
           codigo: 1,
@@ -16,7 +15,7 @@ class LoginRepository {
           mostrarPrecos: true,
           fantasia: 'test');
     }
-    var data = {"usuario": usuario, "senha": senha, "celular": fone};
+    var data = {"login": usuario.toUpperCase(), "senha": senha};
     var headers = {
       'Content-Type': 'application/json; charset=UTF-8',
     };

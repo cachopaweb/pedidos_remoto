@@ -10,7 +10,7 @@ class MyInputText extends StatelessWidget {
     super.key,
     this.label,
     this.icone,
-    this.inputSenha,
+    this.inputSenha = false,
     this.controller,
   }) : super();
 

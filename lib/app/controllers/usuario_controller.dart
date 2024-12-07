@@ -7,10 +7,9 @@ class UsuarioController extends ChangeNotifier {
   late UsuarioLogado usuarioLogado;
   final repository = LoginRepository();
 
-  Future<UsuarioLogado> logar(
-      String usuario, String senha, String phoneId) async {
+  Future<UsuarioLogado> logar(String usuario, String senha) async {
     try {
-      usuarioLogado = await repository.handleLogin(usuario, senha, phoneId);
+      usuarioLogado = await repository.handleLogin(usuario, senha);
       notifyListeners();
 
       return usuarioLogado;

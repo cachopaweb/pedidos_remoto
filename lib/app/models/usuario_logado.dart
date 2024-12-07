@@ -30,7 +30,7 @@ class UsuarioLogado {
       codigo: map['codigo'] ?? 0,
       cliente: map['cliente'] ?? 0,
       nome: map['nome'] ?? '',
-      mostrarPrecos: map['mostrar_precos'] ?? false,
+      mostrarPrecos: map['mostrar_precos'] ?? true,
       fantasia: map['fantasia'] ?? '',
     );
   }
