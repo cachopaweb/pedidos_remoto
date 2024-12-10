@@ -19,7 +19,7 @@ class LoginRepository {
       'Content-Type': 'application/json; charset=UTF-8',
     };
     final baseUrl = ConfigController.instance.getUrlBase();
-    var uri = Uri.http(baseUrl, '/v1/login');
+    var uri = Uri.https(baseUrl, '/v1/login');
     final response =
         await http.post(uri, headers: headers, body: jsonEncode(data));
     if (response.statusCode == 200) {
@@ -28,18 +28,10 @@ class LoginRepository {
     if (response.statusCode == 401) {
       return throw ExceptionUsuarioNaoAutorizado();
     }
-    if (response.statusCode == 400) {
-      return throw ExceptionCelularNaoPermitido();
-    } else {
-      return throw Exception('erro nao catalogado!');
-    }
+    return throw Exception('erro nao catalogado!');
   }
 }
 
 class ExceptionUsuarioNaoAutorizado implements Exception {
   final String message = 'Usuário não autorizado';
-}
-
-class ExceptionCelularNaoPermitido implements Exception {
-  final String message = 'Celular não permitido';
 }

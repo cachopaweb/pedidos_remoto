@@ -9,7 +9,7 @@ class CatalogoRepository {
   Future<List<CatalogoModel>> getCatalogo() async {
     try {
       final baseUrl = ConfigController.instance.getUrlBase();
-      var uri = Uri.http(baseUrl, '/v1/catalogo');
+      var uri = Uri.https(baseUrl, '/v1/catalogo');
       var headers = {
         'Content-Type': 'application/json; charset=UTF-8',
       };

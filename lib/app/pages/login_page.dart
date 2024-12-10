@@ -29,7 +29,6 @@ class LoginPageState extends State<LoginPage> {
   final txtSenhaController = TextEditingController(text: '');
   final String version = '1.0.0';
   var tentandoLogar = false;
-  bool idIsVisible = false;
 
   _setarInputs() async {
     var usuario = await localStorage.get('usuario') ?? '';
@@ -104,9 +103,6 @@ class LoginPageState extends State<LoginPage> {
 
       setState(() {
         tentandoLogar = false;
-        if (e is ExceptionCelularNaoPermitido) {
-          idIsVisible = true;
-        }
       });
 
       scaffoldMessenger.showSnackBar(SnackBar(

@@ -18,7 +18,7 @@ class PedidoRepository implements IPedidoRepository {
   Future<PedidoModel> inserePedido(PedidoModel pedidoModel) async {
     try {
       final baseUrl = ConfigController.instance.getUrlBase();
-      var uri = Uri.http(baseUrl, '/v1/pedidos');
+      var uri = Uri.https(baseUrl, '/v1/pedidos');
       final pedido = pedidoModel.toMap();
       final response = await http.post(uri,
           headers: <String, String>{
@@ -36,7 +36,7 @@ class PedidoRepository implements IPedidoRepository {
   Future insereItensPedido(List<ItensPedido> itens) async {
     try {
       final baseUrl = ConfigController.instance.getUrlBase();
-      var uri = Uri.http(baseUrl, '/v1/itensPedido');
+      var uri = Uri.https(baseUrl, '/v1/itensPedido');
       final response = await http.post(uri,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
