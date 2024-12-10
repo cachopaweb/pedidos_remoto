@@ -9,11 +9,10 @@ class LoginRepository {
   Future<UsuarioLogado> handleLogin(String usuario, String senha) async {
     if (usuario.contains('test') && senha.contains('123')) {
       return UsuarioLogado(
-          codigo: 1,
-          cliente: 1,
-          nome: 'test',
-          mostrarPrecos: true,
-          fantasia: 'test');
+        codigo: 1,
+        login: 'test',
+        mostrarPrecos: true,
+      );
     }
     var data = {"login": usuario.toUpperCase(), "senha": senha};
     var headers = {

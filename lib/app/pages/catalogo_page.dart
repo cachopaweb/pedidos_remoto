@@ -26,8 +26,7 @@ class CatalogoPageState extends State<CatalogoPage> {
     super.initState();
   }
 
-  _buildBody(
-      List<CatalogoModel> listaItensCatalogo, String fantasia, String nome) {
+  _buildBody(List<CatalogoModel> listaItensCatalogo, String login) {
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
@@ -42,14 +41,10 @@ class CatalogoPageState extends State<CatalogoPage> {
                   text: 'Seja bem vindo(a), ',
                   children: [
                     TextSpan(
-                      text: '$fantasia\n',
-                      style: AppTextStyles.textBodyBold,
-                    ),
-                    TextSpan(
                       text: 'Usuário: ',
                       children: [
                         TextSpan(
-                          text: nome,
+                          text: login,
                           style: AppTextStyles.textBodyBold,
                         ),
                       ],
@@ -130,8 +125,7 @@ class CatalogoPageState extends State<CatalogoPage> {
             final listaCatalogo = snapshot.data!;
             return _buildBody(
               listaCatalogo,
-              usuarioController.usuarioLogado.fantasia,
-              usuarioController.usuarioLogado.nome,
+              usuarioController.usuarioLogado.login,
             );
           }
           if (snapshot.hasError) {
