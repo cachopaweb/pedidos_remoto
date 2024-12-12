@@ -19,7 +19,7 @@ class LoginRepository {
       'Content-Type': 'application/json; charset=UTF-8',
     };
     final baseUrl = ConfigController.instance.getUrlBase();
-    var uri = Uri.http(baseUrl, '/v1/login');
+    var uri = Uri.https(baseUrl, '/v1/login');
     final response =
         await http.post(uri, headers: headers, body: jsonEncode(data));
     if (response.statusCode == 200) {
