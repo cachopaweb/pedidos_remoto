@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:pedidos_remoto/app/core/core.dart';
+import 'package:pedidos_remoto/app/models/catalogo/catalogo_model.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/carinho_controller.dart';
-import '../models/catalogo/produto_model.dart';
 import '../pages/itens_catalogo_page.dart';
 
 class ItemCardWidget extends StatefulWidget {
-  final ProdutoModel produtoModel;
+  final CatalogoModel catalogoModel;
 
   const ItemCardWidget({
     super.key,
-    required this.produtoModel,
+    required this.catalogoModel,
   });
 
   @override
@@ -26,7 +26,7 @@ class ItemWidgetState extends State<ItemCardWidget> {
     ;
     final controller = Provider.of<CarrinhoController>(context);
     final haveItemList = controller.itens.where((e) {
-      return widget.produtoModel.codigo == e.codigo;
+      return widget.catalogoModel.codigo == e.codigo;
     }).toList();
     ////
     isSelected = haveItemList.isNotEmpty;
@@ -36,7 +36,7 @@ class ItemWidgetState extends State<ItemCardWidget> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => ItensCatalogoPage(
-              produtoModel: widget.produtoModel,
+              catalogoModel: widget.catalogoModel,
             ),
           ),
         );
@@ -52,7 +52,7 @@ class ItemWidgetState extends State<ItemCardWidget> {
                 'Código',
                 style: AppTextStyles.textBodyBold,
               ),
-              Text(widget.produtoModel.codigo.toString()),
+              Text(widget.catalogoModel.codProduto.toString()),
             ],
           ),
           title: Column(
@@ -63,7 +63,7 @@ class ItemWidgetState extends State<ItemCardWidget> {
                 'Nome',
                 style: AppTextStyles.textBodyBold,
               ),
-              Text(widget.produtoModel.nome!),
+              Text(widget.catalogoModel.produto!.nome!),
             ],
           ),
           trailing: isSelected ? const IconDone() : const SizedBox(height: 1),

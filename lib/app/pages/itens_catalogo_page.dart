@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pedidos_remoto/app/models/catalogo/catalogo_model.dart';
 
 import 'package:provider/provider.dart';
 
@@ -8,11 +9,11 @@ import '../widgets/icone_carrinho.dart';
 import '../widgets/item_catalogo_widget.dart';
 
 class ItensCatalogoPage extends StatefulWidget {
-  final ProdutoModel produtoModel;
+  final CatalogoModel catalogoModel;
 
   const ItensCatalogoPage({
     super.key,
-    required this.produtoModel,
+    required this.catalogoModel,
   });
 
   @override
@@ -26,7 +27,7 @@ class _ItensCatalogoPageState extends State<ItensCatalogoPage> {
     return SizedBox(
       height: 200,
       child: ItemCatalogoWidget(
-        produto: widget.produtoModel,
+        catalogoModel: widget.catalogoModel,
       ),
     );
   }
@@ -38,8 +39,8 @@ class _ItensCatalogoPageState extends State<ItensCatalogoPage> {
       appBar: AppBar(
         title: Text(
           usuarioLogado.mostrarPrecos
-              ? widget.produtoModel.valorv!.toStringAsFixed(2)
-              : widget.produtoModel.nome!,
+              ? widget.catalogoModel.precoVenda!.toStringAsFixed(2)
+              : widget.catalogoModel.produto!.nome!,
         ),
         centerTitle: true,
         actions: const [

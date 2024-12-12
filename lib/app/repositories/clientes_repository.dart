@@ -9,7 +9,7 @@ class ClientesRepository {
   Future<List<ClienteModel>> getClientes() async {
     try {
       final baseUrl = ConfigController.instance.getUrlBase();
-      var uri = Uri.https(baseUrl, '/v1/clientes');
+      var uri = Uri.http(baseUrl, '/v1/clientes');
       var headers = {
         'Content-Type': 'application/json; charset=UTF-8',
       };

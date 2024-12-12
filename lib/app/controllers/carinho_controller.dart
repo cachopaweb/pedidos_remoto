@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:pedidos_remoto/app/models/catalogo/produto_model.dart';
-import 'package:pedidos_remoto/app/models/cliente_model.dart';
-import 'package:pedidos_remoto/app/models/tipo_pgm_model.dart';
 
+import '../models/catalogo/catalogo_model.dart';
+import '../models/cliente_model.dart';
 import '../models/itens_carrinho.dart';
 import '../models/itens_pedido.dart';
 import '../models/pedido_model.dart';
+import '../models/tipo_pgm_model.dart';
 import '../models/usuario_logado.dart';
 import '../repositories/pedido_repository.dart';
 import '../services/local_storage_interface.dart';
@@ -63,6 +63,19 @@ class CarrinhoController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setQuantidade(int codigo, double quantidade) async {
+    var index = _itens.indexWhere((element) => element.codigo == codigo);
+    if (index >= 0) {
+      _itens[index].quantidade = quantidade;
+      if (_itens[index].quantidade < 0) {
+        _itens[index].quantidade = 0;
+      }
+      var data = jsonEncode(_itens.map((e) => e.toMap()).toList());
+      await storage.put('itens', data);
+      notifyListeners();
+    }
+  }
+
   void decrementaQuantidade(int codigo) async {
     bool deleteItens = false;
     var index = _itens.indexWhere((element) => element.codigo == codigo);
@@ -91,15 +104,15 @@ class CarrinhoController extends ChangeNotifier {
     }
   }
 
-  addItem(ProdutoModel produto) async {
+  addItem(CatalogoModel catalogo, double quantidade) async {
     var index =
-        _itens.indexWhere((element) => element.codigo == produto.codigo);
+        _itens.indexWhere((element) => element.codigo == catalogo.codigo);
     if (index < 0) {
       var itemCarrinho = Item(
-        codigo: produto.codigo!,
-        quantidade: 1,
-        valor: produto.valorv,
-        nome: produto.nome!,
+        codigo: catalogo.codigo!,
+        quantidade: quantidade,
+        valor: catalogo.precoVenda,
+        nome: catalogo.produto!.nome!,
       );
       _itens.add(itemCarrinho);
     } else {

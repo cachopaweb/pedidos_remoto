@@ -1,18 +1,15 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:pedidos_remoto/app/widgets/responsive_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/usuario_controller.dart';
 import '../core/app_colors.dart';
 import '../models/cliente_model.dart';
 import '../models/tipo_pgm_model.dart';
-import '../widgets/botao_widget.dart';
 import '../controllers/carinho_controller.dart';
 import '../core/app_text_styles.dart';
-import '../models/itens_carrinho.dart';
 import '../widgets/card_finalizar_pedido_widget.dart';
-import '../widgets/card_item_widget.dart';
+import '../widgets/item_carrinho_widget.dart';
 
 class CarrinhoPage extends StatefulWidget {
   const CarrinhoPage({super.key});
@@ -115,28 +112,96 @@ class CarrinhoPageState extends State<CarrinhoPage> {
 
   _buildItensCarrinho(CarrinhoController carrinhoController) {
     final size = MediaQuery.of(context).size;
-    final mostrarPrecos =
-        context.watch<UsuarioController>().usuarioLogado.mostrarPrecos;
     var itensCarrinho = carrinhoController.itens;
     double valorTotal = carrinhoController.valorTotal;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: ListView.builder(
-            itemCount: itensCarrinho.length,
-            itemBuilder: (_, index) {
-              return itemCarrinho(itensCarrinho, index, carrinhoController);
-            },
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: itensCarrinho.length,
+              itemBuilder: (_, index) {
+                return ItemCarrinhoWidget(
+                  context: context,
+                  itensCarrinho: itensCarrinho,
+                  index: index,
+                  controller: carrinhoController,
+                );
+              },
+            ),
           ),
+          SizedBox(
+            width: size.width,
+            height: 50,
+            child: Center(
+              child: ResponsiveWidget(
+                mobile: Column(
+                  children: [
+                    _botaoCancelar(size, carrinhoController),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    botaoFinalizar(size, carrinhoController),
+                  ],
+                ),
+                tablet: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _botaoCancelar(size, carrinhoController),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    botaoFinalizar(size, carrinhoController),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          panelPrecos(valorTotal),
+        ],
+      ),
+    );
+  }
+
+  Widget _botaoCancelar(Size size, CarrinhoController controller) {
+    return Container(
+      margin: const EdgeInsets.all(5),
+      width: size.width * 0.3,
+      decoration: BoxDecoration(
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: TextButton(
+        style: ButtonStyle(
+          elevation: WidgetStateProperty.all(5),
+          backgroundColor: WidgetStateProperty.all(Colors.red),
         ),
-        botaoFinalizar(size, carrinhoController),
-        mostrarPrecos
-            ? panelPrecos(valorTotal)
-            : const SizedBox(
-                height: 1,
-              )
-      ],
+        child: Text(
+          'Cancelar Pedido',
+          style: AppTextStyles.title,
+        ),
+        onPressed: () async {
+          try {
+            final cancelar = await _showModalCancelarPedido();
+            if (cancelar) {
+              //limpa o carrinho
+              controller.clean();
+            }
+          } catch (e) {
+            var snackBar = const SnackBar(
+                content: Text(
+              'Erro ao finalizar pedido!',
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ));
+            if (!mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        },
+      ),
     );
   }
 
@@ -159,11 +224,10 @@ class CarrinhoPageState extends State<CarrinhoPage> {
         ));
   }
 
-  Container botaoFinalizar(Size size, CarrinhoController controller) {
+  Widget botaoFinalizar(Size size, CarrinhoController controller) {
     return Container(
-      margin: const EdgeInsets.all(35),
-      height: 50,
-      width: size.width,
+      margin: const EdgeInsets.all(5),
+      width: size.width * 0.3,
       decoration: BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.circular(8),
@@ -191,6 +255,7 @@ class CarrinhoPageState extends State<CarrinhoPage> {
                 color: Colors.red,
               ),
             ));
+            if (!mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         },
@@ -231,17 +296,17 @@ class CarrinhoPageState extends State<CarrinhoPage> {
                         backgroundColor: WidgetStateProperty.all(Colors.green)),
                     onPressed: () {
                       if (clienteController.value.codigo == 0) {
-                        _showSnackBar('Cliente não informado!');
+                        _showMessage('Cliente não informado!');
                         return;
                       }
 
                       if (enderecoController.text.isEmpty) {
-                        _showSnackBar('Endereço não informado!');
+                        _showMessage('Endereço não informado!');
                         return;
                       }
 
                       if (tipoPgmController.value.descricao.isEmpty) {
-                        _showSnackBar('Tipo Pagamento não informado!');
+                        _showMessage('Tipo Pagamento não informado!');
                         return;
                       }
                       Navigator.of(context).pop(true);
@@ -266,70 +331,46 @@ class CarrinhoPageState extends State<CarrinhoPage> {
     );
   }
 
-  Widget itemCarrinho(
-      List<Item> itensCarrinho, int index, CarrinhoController controller) {
-    final item = itensCarrinho[index];
-    return SizedBox(
-      child: CardItem(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 350,
-                    child: Text(
-                      item.nome,
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: AppColors.primary,
-                      ),
-                    ),
+  Future _showModalCancelarPedido() {
+    return showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: const Text('Cancelar pedido'),
+          actions: [
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Você tem certeza que deseja cancelar o Pedido?',
+                    style: AppTextStyles.textBodyBold,
                   ),
-                  Row(
-                    children: [
-                      Provider.of<UsuarioController>(context)
-                              .usuarioLogado
-                              .mostrarPrecos
-                          ? Row(
-                              children: [
-                                Text(
-                                  'Vlr Unit: R\$ ${item.valor!.toStringAsFixed(2)}',
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 30,
-                                ),
-                                Text(
-                                  'Vlr Total: R\$ ${(item.valor! * item.quantidade).toStringAsFixed(2)}',
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            )
-                          : const SizedBox(
-                              height: 1,
-                            ),
-                    ],
+                ),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(Colors.green)),
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    child: Text('Sim', style: AppTextStyles.title),
                   ),
-                ],
-              ),
-              Acoes(item: item),
-            ],
-          ),
-        ),
-      ),
+                  const SizedBox(width: 35),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(Colors.red)),
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    child: Text('Não', style: AppTextStyles.title),
+                  ),
+                ]),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -355,50 +396,6 @@ class CarrinhoPageState extends State<CarrinhoPage> {
               : const SizedBox(
                   height: 1,
                 ),
-    );
-  }
-}
-
-class Acoes extends StatelessWidget {
-  const Acoes({
-    super.key,
-    required this.item,
-  });
-
-  final Item item;
-
-  @override
-  Widget build(BuildContext context) {
-    final carrinhoController =
-        Provider.of<CarrinhoController>(context, listen: true);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Botao(
-            size: const Size(35, 35),
-            cor: Colors.red,
-            icone: Icons.remove,
-            onClick: () {
-              carrinhoController.decrementaQuantidade(item.codigo);
-            }),
-        const SizedBox(width: 10),
-        Text(
-          item.quantidade.toStringAsFixed(0),
-          style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(width: 10),
-        Botao(
-          size: const Size(35, 35),
-          cor: Colors.green,
-          icone: Icons.add,
-          onClick: () {
-            carrinhoController.incrementaQuantidade(item.codigo);
-          },
-        ),
-      ],
     );
   }
 }

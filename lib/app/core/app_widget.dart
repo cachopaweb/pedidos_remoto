@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pedidos_remoto/app/widgets/card_finalizar_pedido_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/carinho_controller.dart';
@@ -32,20 +31,22 @@ class AppWidget extends StatelessWidget {
         title: AppTextStyles.titulo,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          appBarTheme: AppBarTheme(
+            appBarTheme: AppBarTheme(
+                color: AppColors.primary,
+                titleTextStyle: AppTextStyles.title,
+                iconTheme: const IconThemeData(
+                  color: Colors.white,
+                )),
+            cardTheme: const CardTheme(
+              color: Colors.white,
+              surfaceTintColor: Colors.white,
+            ),
+            iconTheme: const IconThemeData(
+              color: Colors.white,
+            ),
+            progressIndicatorTheme: ProgressIndicatorThemeData(
               color: AppColors.primary,
-              titleTextStyle: AppTextStyles.title,
-              iconTheme: const IconThemeData(
-                color: Colors.white,
-              )),
-          cardTheme: const CardTheme(
-            color: Colors.white,
-            surfaceTintColor: Colors.white,
-          ),
-          iconTheme: const IconThemeData(
-            color: Colors.white,
-          ),
-        ),
+            )),
         initialRoute: '/',
         routes: {
           '/': (context) => const SplashPage(),

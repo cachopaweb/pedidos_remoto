@@ -1,15 +1,18 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:pedidos_remoto/app/models/itens_carrinho.dart';
-
-import 'package:pedidos_remoto/app/widgets/botao_widget.dart';
 import 'package:provider/provider.dart';
+
+import 'package:pedidos_remoto/app/models/itens_carrinho.dart';
+import 'package:pedidos_remoto/app/widgets/botao_widget.dart';
+import 'package:pedidos_remoto/app/widgets/responsive_widget.dart';
 
 import '../controllers/carinho_controller.dart';
 import '../controllers/usuario_controller.dart';
 import '../core/core.dart';
 import '../models/catalogo/catalogo_model.dart';
-
 import '../repositories/catalogo_repository.dart';
+import '../repositories/pedido_repository.dart';
+import '../widgets/card_item_widget.dart';
 import '../widgets/icone_carrinho.dart';
 
 class CatalogoPage extends StatefulWidget {
@@ -56,7 +59,10 @@ class CatalogoPageState extends State<CatalogoPage> {
           ),
           Expanded(
             flex: 1,
-            child: DataTablePedido(listaItensCatalogo: listaItensCatalogo),
+            child: ResponsiveWidget(
+              tablet: DataTablePedido(listaItensCatalogo: listaItensCatalogo),
+              mobile: ListViewPedido(listaItensCatalogo: listaItensCatalogo),
+            ),
           ),
           _panelPrecos(),
         ],
@@ -117,7 +123,7 @@ class CatalogoPageState extends State<CatalogoPage> {
         ],
       ),
       body: FutureBuilder<List<CatalogoModel>>(
-        future: repository.getCatalogo(),
+        future: repository.getCatalogo(usuarioController.usuarioLogado.codigo),
         initialData: const [],
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done &&
@@ -134,6 +140,26 @@ class CatalogoPageState extends State<CatalogoPage> {
           return _buildLoading();
         },
       ),
+    );
+  }
+}
+
+class ListViewPedido extends StatelessWidget {
+  const ListViewPedido({
+    super.key,
+    required this.listaItensCatalogo,
+  });
+
+  final List<CatalogoModel> listaItensCatalogo;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: listaItensCatalogo
+          .map((catalogo) => ItemCatalogoWidget(
+                catalogoModel: catalogo,
+              ))
+          .toList(),
     );
   }
 }
@@ -184,21 +210,20 @@ class DataTablePedido extends StatelessWidget {
                 return DataRow(
                   cells: <DataCell>[
                     DataCell(Text(catalogo.produto!.nome!)),
-                    DataCell(
-                        Text(catalogo.produto!.valorv!.toStringAsFixed(2))),
+                    DataCell(Text(catalogo.precoVenda!.toStringAsFixed(2))),
                     DataCell(
                       Consumer<CarrinhoController>(
                           builder: (context, controller, child) {
                         var item = Item.empty();
                         if (controller.itens.isNotEmpty) {
                           if (controller.itens
-                              .any((e) => e.codigo == catalogo.codProduto)) {
-                            item = controller.itens.firstWhere(
-                                (e) => e.codigo == catalogo.codProduto);
+                              .any((e) => e.codigo == catalogo.codigo)) {
+                            item = controller.itens
+                                .firstWhere((e) => e.codigo == catalogo.codigo);
                           }
                         }
                         return Text(
-                          (catalogo.produto!.valorv! *
+                          (catalogo.precoVenda! *
                                   (item.codigo > 0 ? item.quantidade : 0.0))
                               .toStringAsFixed(2),
                         );
@@ -223,6 +248,93 @@ class DataTablePedido extends StatelessWidget {
   }
 }
 
+class ItemCatalogoWidget extends StatelessWidget {
+  const ItemCatalogoWidget({
+    super.key,
+    required this.catalogoModel,
+  });
+
+  final CatalogoModel catalogoModel;
+
+  List<Widget> _dados(Item item) {
+    return [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 350,
+            child: Text(
+              catalogoModel.produto!.nome!,
+              style: TextStyle(
+                fontSize: 20,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+          Row(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'Vlr Unit: R\$ ${catalogoModel.precoVenda!.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 30,
+                  ),
+                  Text(
+                    'Vlr Total: R\$ ${(catalogoModel.precoVenda! * (item.codigo > 0 ? item.quantidade : 0.0)).toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+      Acoes(catalogoModel: catalogoModel),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final carrinhoController =
+        Provider.of<CarrinhoController>(context, listen: true);
+    var item = Item.empty();
+    if (carrinhoController.itens.isNotEmpty) {
+      if (carrinhoController.itens
+          .any((e) => e.codigo == catalogoModel.codigo)) {
+        item = carrinhoController.itens
+            .firstWhere((e) => e.codigo == catalogoModel.codigo);
+      }
+    }
+    return CardItem(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ResponsiveWidget(
+          mobile: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: _dados(item),
+          ),
+          tablet: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: _dados(item),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class Acoes extends StatelessWidget {
   const Acoes({
     super.key,
@@ -238,10 +350,18 @@ class Acoes extends StatelessWidget {
     var item = Item.empty();
     if (carrinhoController.itens.isNotEmpty) {
       if (carrinhoController.itens
-          .any((e) => e.codigo == catalogoModel.codProduto)) {
+          .any((e) => e.codigo == catalogoModel.codigo)) {
         item = carrinhoController.itens
-            .firstWhere((e) => e.codigo == catalogoModel.codProduto);
+            .firstWhere((e) => e.codigo == catalogoModel.codigo);
       }
+    }
+    final edtQuantidade =
+        TextEditingController(text: item.quantidade.toStringAsFixed(0));
+    if (edtQuantidade.text.isNotEmpty) {
+      edtQuantidade.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: edtQuantidade.text.length,
+      );
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -251,14 +371,39 @@ class Acoes extends StatelessWidget {
             cor: Colors.red,
             icone: Icons.remove,
             onClick: () {
-              carrinhoController.removeItem(catalogoModel.codProduto!);
+              carrinhoController.removeItem(catalogoModel.codigo!);
             }),
         const SizedBox(width: 10),
-        Text(
-          item.quantidade.toStringAsFixed(0),
-          style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
+        SizedBox(
+          width: 50,
+          height: 50,
+          child: TextFormField(
+            onTap: () {
+              if (edtQuantidade.text.isNotEmpty) {
+                edtQuantidade.selection = TextSelection(
+                  baseOffset: 0,
+                  extentOffset: edtQuantidade.text.length,
+                );
+              }
+            },
+            textAlign: TextAlign.center,
+            controller: edtQuantidade,
+            textInputAction: TextInputAction.next,
+            onFieldSubmitted: (value) {
+              if (value.isEmpty) {
+                return;
+              }
+              if (item.quantidade == 0) {
+                carrinhoController.addItem(catalogoModel, double.parse(value));
+              } else {
+                carrinhoController.setQuantidade(
+                    item.codigo, double.parse(value));
+              }
+            },
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         const SizedBox(width: 10),
@@ -267,7 +412,7 @@ class Acoes extends StatelessWidget {
           cor: Colors.green,
           icone: Icons.add,
           onClick: () {
-            carrinhoController.addItem(catalogoModel.produto!);
+            carrinhoController.addItem(catalogoModel, 1);
           },
         ),
       ],

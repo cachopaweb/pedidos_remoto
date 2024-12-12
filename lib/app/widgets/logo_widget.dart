@@ -25,8 +25,8 @@ class _LogoWidgetState extends State<LogoWidget> {
         ),
         child: Center(
           child: SizedBox(
-            height: 100,
-            width: 100,
+            height: 160,
+            width: 160,
             child: Image.asset(
               height: 50,
               width: 50,

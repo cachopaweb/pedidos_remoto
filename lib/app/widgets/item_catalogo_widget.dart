@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:pedidos_remoto/app/models/catalogo/catalogo_model.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/carinho_controller.dart';
-import '../core/core.dart';
-import '../models/catalogo/produto_model.dart';
 import 'botao_widget.dart';
 import 'card_item_widget.dart';
 
 class ItemCatalogoWidget extends StatefulWidget {
-  final ProdutoModel produto;
+  final CatalogoModel catalogoModel;
 
   const ItemCatalogoWidget({
     super.key,
-    required this.produto,
+    required this.catalogoModel,
   });
 
   @override
@@ -45,27 +44,27 @@ class _ItemCatalogoWidgetState extends State<ItemCatalogoWidget> {
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<CarrinhoController>(context);
-    Widget produto() {
+    Widget catalogo() {
       return Padding(
         padding: const EdgeInsets.all(2.0),
         child: DetalheProduto(
-          produto: widget.produto,
+          catalogoModel: widget.catalogoModel,
           controller: controller,
         ),
       );
     }
 
-    return _buildBody(context, produto);
+    return _buildBody(context, catalogo);
   }
 }
 
 class DetalheProduto extends StatefulWidget {
-  final ProdutoModel produto;
+  final CatalogoModel catalogoModel;
   final CarrinhoController controller;
 
   const DetalheProduto({
     super.key,
-    required this.produto,
+    required this.catalogoModel,
     required this.controller,
   });
 
@@ -86,7 +85,7 @@ class DetalheProdutoState extends State<DetalheProduto> {
 
   _vinculaItensCarrinho() {
     var index = widget.controller.itens
-        .indexWhere((element) => element.codigo == widget.produto.codigo);
+        .indexWhere((element) => element.codigo == widget.catalogoModel.codigo);
     if (index >= 0) {
       if (index >= 0) {
         quantidade.value = widget.controller.itens[index].quantidade;
@@ -97,11 +96,11 @@ class DetalheProdutoState extends State<DetalheProduto> {
   }
 
   _removeItem() {
-    widget.controller.removeItem(widget.produto.codigo!);
+    widget.controller.removeItem(widget.catalogoModel.codigo!);
   }
 
   _addItem() {
-    widget.controller.addItem(widget.produto);
+    widget.controller.addItem(widget.catalogoModel, 1);
   }
 
   @override
@@ -115,7 +114,7 @@ class DetalheProdutoState extends State<DetalheProduto> {
         builder: (context, qtd, _) {
           return Text(
             qtd.toStringAsFixed(0),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
             ),
@@ -124,7 +123,7 @@ class DetalheProdutoState extends State<DetalheProduto> {
       ),
       const SizedBox(height: 10),
       acoes(),
-      SizedBox(
+      const SizedBox(
         height: 20,
       ),
     ]);
@@ -134,7 +133,7 @@ class DetalheProdutoState extends State<DetalheProduto> {
     return Row(
       children: [
         Botao(
-          size: Size(60, 60),
+          size: const Size(60, 60),
           cor: Colors.green,
           icone: Icons.add,
           onClick: () {
@@ -143,41 +142,12 @@ class DetalheProdutoState extends State<DetalheProduto> {
         ),
         const SizedBox(width: 30),
         Botao(
-          size: Size(60, 60),
+          size: const Size(60, 60),
           icone: Icons.remove,
           cor: Colors.red,
           onClick: () {
             _removeItem();
           },
-        ),
-      ],
-    );
-  }
-
-  Row itemNovoCatalogo() {
-    return Row(
-      children: [
-        const SizedBox(
-          height: 25,
-          width: 25,
-          child: Icon(
-            Icons.star,
-            color: Colors.blue,
-          ),
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-        SizedBox(
-          height: 30,
-          width: 100,
-          child: Center(
-            child: Text(
-              'Produto novo no Catálogo',
-              style: AppTextStyles.textBodyBold,
-              textAlign: TextAlign.center,
-            ),
-          ),
         ),
       ],
     );
