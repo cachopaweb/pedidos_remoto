@@ -134,7 +134,6 @@ class CarrinhoPageState extends State<CarrinhoPage> {
           ),
           SizedBox(
             width: size.width,
-            height: 50,
             child: Center(
               child: ResponsiveWidget(
                 mobile: Column(
@@ -168,7 +167,7 @@ class CarrinhoPageState extends State<CarrinhoPage> {
   Widget _botaoCancelar(Size size, CarrinhoController controller) {
     return Container(
       margin: const EdgeInsets.all(5),
-      width: size.width * 0.3,
+      width: size.width * 0.45,
       decoration: BoxDecoration(
         color: Colors.red,
         borderRadius: BorderRadius.circular(8),
@@ -227,15 +226,15 @@ class CarrinhoPageState extends State<CarrinhoPage> {
   Widget botaoFinalizar(Size size, CarrinhoController controller) {
     return Container(
       margin: const EdgeInsets.all(5),
-      width: size.width * 0.3,
+      width: size.width * 0.45,
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: AppColors.primary,
         borderRadius: BorderRadius.circular(8),
       ),
       child: TextButton(
         style: ButtonStyle(
           elevation: WidgetStateProperty.all(5),
-          backgroundColor: WidgetStateProperty.all(Colors.black),
+          backgroundColor: WidgetStateProperty.all(AppColors.primary),
         ),
         child: Text(
           'Finalizar Pedido',

@@ -79680,8 +79680,8 @@ V5(a){var s=0,r=A.I(t.dS),q,p=2,o,n,m,l,k,j,i,h,g,f,e
 var $async$ui=A.J(function(b,c){if(b===1){o=c
 s=p}while(true)switch(s){case 0:p=4
 $.v1()
-n="localhost:3333"
-m=A.E7("http",n,"/v1/catalogo/usuario/"+a,null)
+n="servidor-primor-fboxwqyjfq-rj.a.run.app"
+m=A.E7("https",n,"/v1/catalogo/usuario/"+a,null)
 g=t.N
 l=A.ak(["Content-Type","application/json; charset=UTF-8"],g,g)
 s=7
@@ -79732,8 +79732,8 @@ uj(){var s=0,r=A.I(t.lj),q,p=2,o,n,m,l,k,j,i,h,g,f,e
 var $async$uj=A.J(function(a,b){if(a===1){o=b
 s=p}while(true)switch(s){case 0:p=4
 $.v1()
-n="localhost:3333"
-m=A.E7("http",n,"/v1/clientes",null)
+n="servidor-primor-fboxwqyjfq-rj.a.run.app"
+m=A.E7("https",n,"/v1/clientes",null)
 g=t.N
 l=A.ak(["Content-Type","application/json; charset=UTF-8"],g,g)
 s=7
@@ -79776,7 +79776,7 @@ o=A.ak(["login",a.toUpperCase(),"senha",b],p,p)
 n=A.ak(["Content-Type","application/json; charset=UTF-8"],p,p)
 $.v1()
 s=3
-return A.N(A.arn(A.E7("http","localhost:3333","/v1/login",null),B.Q.kt(o,null),n),$async$y_)
+return A.N(A.arn(A.E7("https","servidor-primor-fboxwqyjfq-rj.a.run.app","/v1/login",null),B.Q.kt(o,null),n),$async$y_)
 case 3:m=d
 p=m.b
 if(p===200){p=B.Q.dM(A.V_(A.UM(m.e).c.a.h(0,"charset")).dM(m.w))
@@ -79801,8 +79801,8 @@ air(a){var s=0,r=A.I(t.ps),q,p=2,o,n,m,l,k,j,i,h,g
 var $async$yi=A.J(function(b,c){if(b===1){o=c
 s=p}while(true)switch(s){case 0:p=4
 $.v1()
-n="localhost:3333"
-m=A.E7("http",n,"/v1/pedidos",null)
+n="servidor-primor-fboxwqyjfq-rj.a.run.app"
+m=A.E7("https",n,"/v1/pedidos",null)
 l=a.e6()
 i=t.N
 i=A.ak(["Content-Type","application/json; charset=UTF-8"],i,i)
@@ -79834,8 +79834,8 @@ aip(a){var s=0,r=A.I(t.z),q,p=2,o,n,m,l,k,j,i,h,g
 var $async$yh=A.J(function(b,c){if(b===1){o=c
 s=p}while(true)switch(s){case 0:p=4
 $.v1()
-n="localhost:3333"
-m=A.E7("http",n,"/v1/itensPedido",null)
+n="servidor-primor-fboxwqyjfq-rj.a.run.app"
+m=A.E7("https",n,"/v1/itensPedido",null)
 j=t.N
 j=A.ak(["Content-Type","application/json; charset=UTF-8"],j,j)
 i=A.V(a).i("a_<1,aD<q,@>>")
@@ -79869,8 +79869,8 @@ un(){var s=0,r=A.I(t.Jn),q,p=2,o,n,m,l,k,j,i,h,g,f,e
 var $async$un=A.J(function(a,b){if(a===1){o=b
 s=p}while(true)switch(s){case 0:p=4
 $.v1()
-n="localhost:3333"
-m=A.E7("http",n,"/v1/tipoPgm",null)
+n="servidor-primor-fboxwqyjfq-rj.a.run.app"
+m=A.E7("https",n,"/v1/tipoPgm",null)
 g=t.N
 l=A.ak(["Content-Type","application/json; charset=UTF-8"],g,g)
 s=7
@@ -80128,7 +80128,7 @@ A.oS.prototype={
 G(a){return new A.Iv(new A.a9X(this),null)}}
 A.a9X.prototype={
 $2(a,b){var s=this.a
-if(b.b>768)return s.d
+if(b.b>550)return s.d
 else return s.c},
 $S:530}
 A.a86.prototype={

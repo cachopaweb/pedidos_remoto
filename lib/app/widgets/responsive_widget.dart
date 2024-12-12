@@ -14,7 +14,7 @@ class ResponsiveWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, breakPoints) {
-      if (breakPoints.maxWidth > 768) {
+      if (breakPoints.maxWidth > 550) {
         return tablet;
       } else {
         return mobile;

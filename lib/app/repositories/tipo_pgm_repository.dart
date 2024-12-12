@@ -9,7 +9,7 @@ class TipoPgmRepository {
   Future<List<TipoPgmModel>> getTipoPgms() async {
     try {
       final baseUrl = ConfigController.instance.getUrlBase();
-      var uri = Uri.https(baseUrl, '/v1/tipoPgm');
+      var uri = Uri.parse('$baseUrl/tipoPgm');
       var headers = {
         'Content-Type': 'application/json; charset=UTF-8',
       };

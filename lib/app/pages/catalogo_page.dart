@@ -345,8 +345,7 @@ class Acoes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final carrinhoController =
-        Provider.of<CarrinhoController>(context, listen: true);
+    final carrinhoController = Provider.of<CarrinhoController>(context);
     var item = Item.empty();
     if (carrinhoController.itens.isNotEmpty) {
       if (carrinhoController.itens
@@ -354,14 +353,6 @@ class Acoes extends StatelessWidget {
         item = carrinhoController.itens
             .firstWhere((e) => e.codigo == catalogoModel.codigo);
       }
-    }
-    final edtQuantidade =
-        TextEditingController(text: item.quantidade.toStringAsFixed(0));
-    if (edtQuantidade.text.isNotEmpty) {
-      edtQuantidade.selection = TextSelection(
-        baseOffset: 0,
-        extentOffset: edtQuantidade.text.length,
-      );
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -377,33 +368,9 @@ class Acoes extends StatelessWidget {
         SizedBox(
           width: 50,
           height: 50,
-          child: TextFormField(
-            onTap: () {
-              if (edtQuantidade.text.isNotEmpty) {
-                edtQuantidade.selection = TextSelection(
-                  baseOffset: 0,
-                  extentOffset: edtQuantidade.text.length,
-                );
-              }
-            },
-            textAlign: TextAlign.center,
-            controller: edtQuantidade,
-            textInputAction: TextInputAction.next,
-            onFieldSubmitted: (value) {
-              if (value.isEmpty) {
-                return;
-              }
-              if (item.quantidade == 0) {
-                carrinhoController.addItem(catalogoModel, double.parse(value));
-              } else {
-                carrinhoController.setQuantidade(
-                    item.codigo, double.parse(value));
-              }
-            },
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+          child: EdtQuantidade(
+            item: item,
+            catalogoModel: catalogoModel,
           ),
         ),
         const SizedBox(width: 10),
@@ -416,6 +383,58 @@ class Acoes extends StatelessWidget {
           },
         ),
       ],
+    );
+  }
+}
+
+class EdtQuantidade extends StatelessWidget {
+  const EdtQuantidade({
+    super.key,
+    required this.item,
+    required this.catalogoModel,
+  });
+
+  final Item item;
+  final CatalogoModel catalogoModel;
+
+  @override
+  Widget build(BuildContext context) {
+    final carrinhoController =
+        Provider.of<CarrinhoController>(context, listen: true);
+    final edtQuantidade =
+        TextEditingController(text: item.quantidade.toStringAsFixed(0));
+    if (edtQuantidade.text.isNotEmpty) {
+      edtQuantidade.selection = TextSelection(
+        baseOffset: 0,
+        extentOffset: edtQuantidade.text.length,
+      );
+    }
+    return TextFormField(
+      onTap: () {
+        if (edtQuantidade.text.isNotEmpty) {
+          edtQuantidade.selection = TextSelection(
+            baseOffset: 0,
+            extentOffset: edtQuantidade.text.length,
+          );
+        }
+      },
+      textAlign: TextAlign.center,
+      controller: edtQuantidade,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (value) {
+        if (value.isEmpty) {
+          return;
+        }
+        if (item.quantidade == 0) {
+          carrinhoController.addItem(catalogoModel, double.parse(value));
+        } else {
+          carrinhoController.setQuantidade(item.codigo, double.parse(value));
+        }
+      },
+      style: const TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+      ),
     );
   }
 }
