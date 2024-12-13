@@ -22,7 +22,7 @@ class ItemCarrinhoWidget extends StatelessWidget {
   final int index;
   final CarrinhoController controller;
 
-  List<Widget> dados() {
+  List<Widget> dados(Size size) {
     final item = itensCarrinho[index];
     return [
       Column(
@@ -30,7 +30,7 @@ class ItemCarrinhoWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            width: 350,
+            width: size.width * 0.7,
             child: Text(
               item.nome,
               style: TextStyle(
@@ -74,6 +74,7 @@ class ItemCarrinhoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return SizedBox(
       child: CardItem(
         child: Padding(
@@ -81,11 +82,11 @@ class ItemCarrinhoWidget extends StatelessWidget {
           child: ResponsiveWidget(
             mobile: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: dados(),
+              children: dados(size),
             ),
             tablet: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: dados(),
+              children: dados(size),
             ),
           ),
         ),
@@ -156,6 +157,7 @@ class EdtQuantidade extends StatelessWidget {
       );
     }
     return TextFormField(
+      keyboardType: TextInputType.number,
       onTap: () {
         if (edtQuantidade.text.isNotEmpty) {
           edtQuantidade.selection = TextSelection(

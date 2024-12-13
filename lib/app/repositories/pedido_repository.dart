@@ -3,9 +3,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:pedidos_remoto/app/models/itens_pedido.dart';
 
 import '../controllers/config_controller.dart';
+import '../models/itens_pedido.dart';
 import '../models/pedido_model.dart';
 
 abstract class IPedidoRepository {

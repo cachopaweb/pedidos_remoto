@@ -2,41 +2,30 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pedidos_remoto/app/models/itens_carrinho.dart';
-import 'package:pedidos_remoto/app/widgets/botao_widget.dart';
-import 'package:pedidos_remoto/app/widgets/responsive_widget.dart';
-
 import '../controllers/carinho_controller.dart';
 import '../controllers/usuario_controller.dart';
 import '../core/core.dart';
 import '../models/catalogo/catalogo_model.dart';
+import '../models/itens_carrinho.dart';
 import '../repositories/catalogo_repository.dart';
-import '../repositories/pedido_repository.dart';
+import '../widgets/botao_widget.dart';
 import '../widgets/card_item_widget.dart';
 import '../widgets/icone_carrinho.dart';
+import '../widgets/responsive_widget.dart';
 
-class CatalogoPage extends StatefulWidget {
-  const CatalogoPage({super.key});
-
-  @override
-  CatalogoPageState createState() => CatalogoPageState();
-}
-
-class CatalogoPageState extends State<CatalogoPage> {
+class CatalogoPage extends StatelessWidget {
   final repository = CatalogoRepository();
-  @override
-  void initState() {
-    super.initState();
-  }
 
-  _buildBody(List<CatalogoModel> listaItensCatalogo, String login) {
+  CatalogoPage({super.key});
+
+  _buildBody(Size size, List<CatalogoModel> listaItensCatalogo, String login) {
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
       child: Column(
         children: [
           SizedBox(
-            width: MediaQuery.of(context).size.width,
+            width: size.width,
             height: 40,
             child: Center(
               child: Text.rich(
@@ -114,6 +103,7 @@ class CatalogoPageState extends State<CatalogoPage> {
   @override
   Widget build(BuildContext context) {
     final usuarioController = Provider.of<UsuarioController>(context);
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text(AppTextStyles.titulo),
@@ -130,6 +120,7 @@ class CatalogoPageState extends State<CatalogoPage> {
               snapshot.hasData) {
             final listaCatalogo = snapshot.data!;
             return _buildBody(
+              size,
               listaCatalogo,
               usuarioController.usuarioLogado.login,
             );
@@ -230,12 +221,9 @@ class DataTablePedido extends StatelessWidget {
                       }),
                     ),
                     DataCell(
-                      Consumer<CarrinhoController>(
-                          builder: (context, controller, child) {
-                        return Acoes(
-                          catalogoModel: catalogo,
-                        );
-                      }),
+                      Acoes(
+                        catalogoModel: catalogo,
+                      ),
                     ),
                   ],
                 );
@@ -410,6 +398,7 @@ class EdtQuantidade extends StatelessWidget {
       );
     }
     return TextFormField(
+      keyboardType: TextInputType.number,
       onTap: () {
         if (edtQuantidade.text.isNotEmpty) {
           edtQuantidade.selection = TextSelection(

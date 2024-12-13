@@ -51,7 +51,7 @@ class AppWidget extends StatelessWidget {
         routes: {
           '/': (context) => const SplashPage(),
           '/login': (context) => const LoginPage(),
-          '/catalogo': (context) => const CatalogoPage(),
+          '/catalogo': (context) => CatalogoPage(),
           '/carrinho': (context) => const CarrinhoPage(),
           '/finalizacao': (context) => const FinalizacaoPage(),
         },

@@ -1,15 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:pedidos_remoto/app/core/core.dart';
 
-import 'package:pedidos_remoto/app/repositories/tipo_pgm_repository.dart';
-import 'package:pedidos_remoto/app/widgets/card_item_widget.dart';
-import 'package:pedidos_remoto/app/widgets/myinput_text.dart';
-
+import '../core/core.dart';
 import '../models/cliente_model.dart';
 import '../models/tipo_pgm_model.dart';
+import '../repositories/tipo_pgm_repository.dart';
 import 'autocomplete_clientes_widget.dart';
-import 'autocomplete_tipo_pgm_widget.dart';
+import 'card_item_widget.dart';
+import 'myinput_text.dart';
 
 class CardFinalizarPedidoWidget extends StatelessWidget {
   const CardFinalizarPedidoWidget({
@@ -18,12 +16,14 @@ class CardFinalizarPedidoWidget extends StatelessWidget {
     required this.enderecoController,
     required this.tipoPgmController,
     required this.emitNFController,
+    required this.obsController,
   });
 
   final ValueNotifier<ClienteModel> clienteController;
   final TextEditingController enderecoController;
   final ValueNotifier<TipoPgmModel> tipoPgmController;
   final ValueNotifier<bool> emitNFController;
+  final TextEditingController obsController;
 
   Widget _buildFormulario() {
     return Form(
@@ -53,6 +53,11 @@ class CardFinalizarPedidoWidget extends StatelessWidget {
             label: 'Emitir NF',
             controller: emitNFController,
           ),
+          MyInputText(
+            label: 'Observação',
+            controller: obsController,
+            qtdLinhas: 3,
+          )
         ],
       ),
     );
@@ -127,17 +132,20 @@ class _ComboBoxTipoPgmState extends State<ComboBoxTipoPgm> {
     _buscarTipoPgm();
   }
 
-  _buscarTipoPgm() async {
+  Future<void> _buscarTipoPgm() async {
     try {
       setState(() {
         carregando = true;
       });
+      final tipoPgmRepository = TipoPgmRepository();
       final lista = await tipoPgmRepository.getTipoPgms();
+
       setState(() {
-        listaTipoPgm = lista;
+        listaTipoPgm = lista.where((e) => e.tipo == 'R').toList();
         carregando = false;
       });
     } catch (e) {
+      debugPrint(e.toString());
       _buildError();
       setState(() {
         carregando = false;

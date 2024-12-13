@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pedidos_remoto/app/widgets/responsive_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/usuario_controller.dart';
@@ -10,6 +9,7 @@ import '../controllers/carinho_controller.dart';
 import '../core/app_text_styles.dart';
 import '../widgets/card_finalizar_pedido_widget.dart';
 import '../widgets/item_carrinho_widget.dart';
+import '../widgets/responsive_widget.dart';
 
 class CarrinhoPage extends StatefulWidget {
   const CarrinhoPage({super.key});
@@ -25,6 +25,7 @@ class CarrinhoPageState extends State<CarrinhoPage> {
   final enderecoController = TextEditingController(text: '');
   final tipoPgmController = ValueNotifier<TipoPgmModel>(TipoPgmModel.empty());
   final emitNFController = ValueNotifier<bool>(false);
+  final obsController = TextEditingController(text: '');
 
   @override
   void initState() {
@@ -76,6 +77,7 @@ class CarrinhoPageState extends State<CarrinhoPage> {
         enderecoController.text,
         tipoPgmController.value,
         emitNFController.value,
+        obsController.text,
       );
       if (!mounted) return;
 
@@ -187,11 +189,14 @@ class CarrinhoPageState extends State<CarrinhoPage> {
             if (cancelar) {
               //limpa o carrinho
               controller.clean();
+              if (mounted) {
+                Navigator.of(context).pushReplacementNamed('/catalogo');
+              }
             }
           } catch (e) {
             var snackBar = const SnackBar(
                 content: Text(
-              'Erro ao finalizar pedido!',
+              'Erro ao cancelar pedido!',
               style: TextStyle(
                 color: Colors.red,
               ),
@@ -276,6 +281,7 @@ class CarrinhoPageState extends State<CarrinhoPage> {
                 enderecoController: enderecoController,
                 tipoPgmController: tipoPgmController,
                 emitNFController: emitNFController,
+                obsController: obsController,
               ),
             ),
           ),

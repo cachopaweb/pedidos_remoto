@@ -5,20 +5,23 @@ class MyInputText extends StatelessWidget {
   final Icon? icone;
   final bool? inputSenha;
   final TextEditingController? controller;
+  final int? qtdLinhas;
 
-  const MyInputText({
-    super.key,
-    this.label,
-    this.icone,
-    this.inputSenha = false,
-    this.controller,
-  }) : super();
+  const MyInputText(
+      {super.key,
+      this.label,
+      this.icone,
+      this.inputSenha = false,
+      this.controller,
+      this.qtdLinhas = 1})
+      : super();
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       obscureText: inputSenha!,
+      maxLines: qtdLinhas,
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(

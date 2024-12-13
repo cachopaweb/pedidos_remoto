@@ -148,6 +148,7 @@ class CarrinhoController extends ChangeNotifier {
     String enderecoEntrega,
     TipoPgmModel tipoPgm,
     bool emitirNF,
+    String observacao,
   ) async {
     var itens = <ItensPedido>[];
 
@@ -162,6 +163,7 @@ class CarrinhoController extends ChangeNotifier {
       valor: total,
       tipoPgm: tipoPgm.codigo,
       emitirNF: emitirNF == true ? 'S' : 'N',
+      obs: observacao,
     );
 
     final pedido = await pedidoRepository.inserePedido(pedidoModel);

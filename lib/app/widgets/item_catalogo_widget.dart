@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pedidos_remoto/app/models/catalogo/catalogo_model.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/carinho_controller.dart';
+import '../models/catalogo/catalogo_model.dart';
 import 'botao_widget.dart';
 import 'card_item_widget.dart';
 

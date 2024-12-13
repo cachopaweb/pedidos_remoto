@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:pedidos_remoto/app/models/itens_pedido.dart';
+import 'itens_pedido.dart';
 
 class PedidoModel {
   int? codigo;

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pedidos_remoto/app/widgets/logo_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/usuario_controller.dart';
 import '../core/core.dart';
-import '../repositories/login_repository.dart';
 import '../services/local_storage_interface.dart';
 import '../services/shared_local_storage_service.dart';
+import '../widgets/logo_widget.dart';
 import '../widgets/myinput_text.dart';
 
 class ValidationException implements Exception {

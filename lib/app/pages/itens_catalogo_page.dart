@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pedidos_remoto/app/models/catalogo/catalogo_model.dart';
 
 import 'package:provider/provider.dart';
 
 import '../controllers/usuario_controller.dart';
-import '../models/catalogo/produto_model.dart';
+import '../models/catalogo/catalogo_model.dart';
 import '../widgets/icone_carrinho.dart';
 import '../widgets/item_catalogo_widget.dart';
 

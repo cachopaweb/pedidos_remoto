@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:pedidos_remoto/app/models/cliente_model.dart';
-import 'package:pedidos_remoto/app/repositories/clientes_repository.dart';
+import '../models/cliente_model.dart';
+import '../repositories/clientes_repository.dart';
 
 class AutocompleteClientesWidget extends StatefulWidget {
   final ValueNotifier<ClienteModel> clienteSelecionado;
@@ -19,25 +19,34 @@ class AutocompleteClientesWidget extends StatefulWidget {
 class _AutocompleteClientesWidgetState
     extends State<AutocompleteClientesWidget> {
   var listaClientes = <ClienteModel>[];
-  var listaNomesPesquisar = <String>[];
+  bool carregando = false;
 
   @override
   void initState() {
     super.initState();
-    _buscarClientes();
+    _buscarClientes('');
   }
 
-  Future<void> _buscarClientes() async {
+  Future<void> _buscarClientes(String busca) async {
+    if (busca.length < 3) {
+      return;
+    }
     try {
+      setState(() {
+        carregando = true;
+      });
       final clientesRepository = ClientesRepository();
-      final lista = await clientesRepository.getClientes();
+      final lista = await clientesRepository.getClientes(busca);
 
       setState(() {
         listaClientes = lista;
-        listaNomesPesquisar = listaClientes.map((e) => e.nome).toList();
+        carregando = false;
       });
     } catch (e) {
       debugPrint(e.toString());
+      setState(() {
+        carregando = false;
+      });
     }
   }
 
@@ -60,13 +69,15 @@ class _AutocompleteClientesWidgetState
           },
         );
       },
-      optionsBuilder: (TextEditingValue textEditingValue) {
+      optionsBuilder: (TextEditingValue textEditingValue) async {
         if (textEditingValue.text == '') {
           return const Iterable<String>.empty();
         }
-        return listaNomesPesquisar.where((String option) {
-          return option.contains(textEditingValue.text.toUpperCase());
-        });
+        if (textEditingValue.text.length > 3) {
+          await _buscarClientes(textEditingValue.text);
+        }
+        return listaClientes.map((e) => e.nome).where((nome) =>
+            nome.toUpperCase().contains(textEditingValue.text.toUpperCase()));
       },
       onSelected: (String selection) {
         debugPrint('You just selected $selection');

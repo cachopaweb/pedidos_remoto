@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pedidos_remoto/app/core/core.dart';
-import 'package:pedidos_remoto/app/models/catalogo/catalogo_model.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/carinho_controller.dart';
+import '../core/core.dart';
+import '../models/catalogo/catalogo_model.dart';
 import '../pages/itens_catalogo_page.dart';
 
 class ItemCardWidget extends StatefulWidget {
