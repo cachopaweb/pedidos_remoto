@@ -5,8 +5,8 @@ import '../controllers/carinho_controller.dart';
 
 class IconeCarrinho extends StatelessWidget {
   const IconeCarrinho({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class IconeCarrinho extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        carrinhoController.quantidadeItens.toStringAsFixed(0),
+                        carrinhoController.totalItens.toStringAsFixed(0),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
