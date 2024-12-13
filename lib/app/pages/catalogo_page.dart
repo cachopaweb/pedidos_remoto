@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_triple/flutter_triple.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/carinho_controller.dart';
@@ -7,45 +8,23 @@ import '../controllers/usuario_controller.dart';
 import '../core/core.dart';
 import '../models/catalogo/catalogo_model.dart';
 import '../models/itens_carrinho.dart';
-import '../repositories/catalogo_repository.dart';
+import '../stores/catalogo_store.dart';
 import '../widgets/botao_widget.dart';
 import '../widgets/card_item_widget.dart';
 import '../widgets/icone_carrinho.dart';
 import '../widgets/responsive_widget.dart';
 
 class CatalogoPage extends StatelessWidget {
-  final repository = CatalogoRepository();
+  final store = CatalogoStore();
 
   CatalogoPage({super.key});
 
-  _buildBody(Size size, List<CatalogoModel> listaItensCatalogo, String login) {
+  _buildBody(Size size, List<CatalogoModel> listaItensCatalogo) {
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
       child: Column(
         children: [
-          SizedBox(
-            width: size.width,
-            height: 40,
-            child: Center(
-              child: Text.rich(
-                TextSpan(
-                  text: 'Seja bem vindo(a), ',
-                  children: [
-                    TextSpan(
-                      text: 'Usuário: ',
-                      children: [
-                        TextSpan(
-                          text: login,
-                          style: AppTextStyles.textBodyBold,
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
           Expanded(
             flex: 1,
             child: ResponsiveWidget(
@@ -102,34 +81,30 @@ class CatalogoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final usuarioController = Provider.of<UsuarioController>(context);
     final size = MediaQuery.of(context).size;
+    final usuarioController =
+        Provider.of<UsuarioController>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text(AppTextStyles.titulo),
         centerTitle: true,
+        leading: IconButton(
+            onPressed: () {
+              store.fetchCatalogo(usuarioController.usuarioLogado.codigo);
+            },
+            icon: const Icon(Icons.refresh)),
         actions: const [
           IconeCarrinho(),
         ],
       ),
-      body: FutureBuilder<List<CatalogoModel>>(
-        future: repository.getCatalogo(usuarioController.usuarioLogado.codigo),
-        initialData: const [],
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done &&
-              snapshot.hasData) {
-            final listaCatalogo = snapshot.data!;
-            return _buildBody(
-              size,
-              listaCatalogo,
-              usuarioController.usuarioLogado.login,
-            );
-          }
-          if (snapshot.hasError) {
-            return _buildError();
-          }
-          return _buildLoading();
-        },
+      body: ScopedBuilder<CatalogoStore, List<CatalogoModel>>(
+        store: store..fetchCatalogo(usuarioController.usuarioLogado.codigo),
+        onError: (_, e) => _buildError(),
+        onLoading: (_) => _buildLoading(),
+        onState: (_, state) => _buildBody(
+          size,
+          state,
+        ),
       ),
     );
   }
@@ -387,10 +362,10 @@ class EdtQuantidade extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final carrinhoController =
-        Provider.of<CarrinhoController>(context, listen: true);
     final edtQuantidade =
         TextEditingController(text: item.quantidade.toStringAsFixed(0));
+    final carrinhoController =
+        Provider.of<CarrinhoController>(context, listen: true);
     if (edtQuantidade.text.isNotEmpty) {
       edtQuantidade.selection = TextSelection(
         baseOffset: 0,
@@ -398,6 +373,8 @@ class EdtQuantidade extends StatelessWidget {
       );
     }
     return TextFormField(
+      autofocus: false,
+      autocorrect: false,
       keyboardType: TextInputType.number,
       onTap: () {
         if (edtQuantidade.text.isNotEmpty) {

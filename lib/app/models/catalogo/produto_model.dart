@@ -5,7 +5,7 @@ import 'unidade_med_model.dart';
 class ProdutoModel {
   int? codigo;
   int? codFor;
-  int? quantidade;
+  double? quantidade;
   double? valorv;
   String? codbarra;
   String? nome;
@@ -28,8 +28,8 @@ class ProdutoModel {
   factory ProdutoModel.fromMap(Map<String, dynamic> data) => ProdutoModel(
         codigo: data['codigo'] as int?,
         codFor: data['codFor'] as int?,
-        quantidade: data['quantidade'] as int?,
-        valorv: data['valorv'] as double?,
+        quantidade: ((data['quantidade'] / 100) * 100) as double?,
+        valorv: ((data['valorv'] / 100) * 100) as double?,
         codbarra: data['codbarra'] as String?,
         nome: data['nome'] as String?,
         estado: data['estado'] as String?,
@@ -67,7 +67,7 @@ class ProdutoModel {
   ProdutoModel copyWith({
     int? codigo,
     int? codFor,
-    int? quantidade,
+    double? quantidade,
     double? valorv,
     String? codbarra,
     String? nome,

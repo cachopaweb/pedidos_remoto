@@ -26,7 +26,7 @@ class CatalogoModel {
   factory CatalogoModel.fromMap(Map<String, dynamic> data) => CatalogoModel(
         codigo: data['codigo'] as int?,
         codProduto: data['codProduto'] as int?,
-        precoVenda: data['precoVenda'] as double?,
+        precoVenda: ((data['precoVenda'] / 100) * 100) as double?,
         dataCadastro: data['dataCadastro'] == null
             ? null
             : DateTime.parse(data['dataCadastro'] as String),
