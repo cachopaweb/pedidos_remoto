@@ -47,7 +47,7 @@ class EdtQuantidadeWidget extends StatelessWidget {
         if (value.isEmpty) {
           return;
         }
-        if (carrinhoController.itens[index].quantidade == 0) {
+        if (index < 0) {
           carrinhoController.addItem(catalogoModel, double.parse(value));
         } else {
           carrinhoController.setQuantidade(
