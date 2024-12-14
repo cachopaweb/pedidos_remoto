@@ -2,154 +2,99 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/carinho_controller.dart';
+import '../core/core.dart';
 import '../models/catalogo/catalogo_model.dart';
-import 'botao_widget.dart';
+import '../models/itens_carrinho.dart';
+import 'acoes_catalogo_widget.dart';
 import 'card_item_widget.dart';
+import 'responsive_widget.dart';
 
-class ItemCatalogoWidget extends StatefulWidget {
-  final CatalogoModel catalogoModel;
-
+class ItemCatalogoWidget extends StatelessWidget {
   const ItemCatalogoWidget({
     super.key,
+    required this.index,
     required this.catalogoModel,
+    required this.carrinhoController,
   });
 
-  @override
-  State<ItemCatalogoWidget> createState() => _ItemCatalogoWidgetState();
-}
+  final int index;
+  final CatalogoModel catalogoModel;
+  final CarrinhoController carrinhoController;
 
-class _ItemCatalogoWidgetState extends State<ItemCatalogoWidget> {
-  Widget _buildBody(BuildContext context, Widget Function() produto) {
-    return Material(
-      child: CardItem(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  produto(),
-                ],
+  List<Widget> _dados(int index) {
+    return [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 350,
+            child: Text(
+              catalogoModel.produto!.nome!,
+              style: TextStyle(
+                fontSize: 20,
+                color: AppColors.primary,
               ),
             ),
-          ],
-        ),
+          ),
+          Row(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'Vlr Unit: R\$ ${catalogoModel.precoVenda!.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 30,
+                  ),
+                  Text(
+                    'Vlr Total: R\$ ${index < 0 ? 0 : (catalogoModel.precoVenda! * (carrinhoController.itens[index].codigo > 0 ? carrinhoController.itens[index].quantidade : 0.0)).toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
+      AcoesCatalogoWidget(
+        catalogoModel: catalogoModel,
+        index: index,
+        carrinhoController: carrinhoController,
+      ),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final carrinhoController =
+        Provider.of<CarrinhoController>(context, listen: false);
+    final index = carrinhoController.itens.indexWhere(
+      (e) => e.codigo == catalogoModel.codigo,
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = Provider.of<CarrinhoController>(context);
-    Widget catalogo() {
-      return Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: DetalheProduto(
-          catalogoModel: widget.catalogoModel,
-          controller: controller,
+    return CardItem(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ResponsiveWidget(
+          mobile: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: _dados(index),
+          ),
+          tablet: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: _dados(index),
+          ),
         ),
-      );
-    }
-
-    return _buildBody(context, catalogo);
-  }
-}
-
-class DetalheProduto extends StatefulWidget {
-  final CatalogoModel catalogoModel;
-  final CarrinhoController controller;
-
-  const DetalheProduto({
-    super.key,
-    required this.catalogoModel,
-    required this.controller,
-  });
-
-  @override
-  State<DetalheProduto> createState() => DetalheProdutoState();
-}
-
-class DetalheProdutoState extends State<DetalheProduto> {
-  final quantidade = ValueNotifier<double>(0.0);
-  @override
-  void initState() {
-    super.initState();
-    _vinculaItensCarrinho();
-    widget.controller.addListener(() {
-      _vinculaItensCarrinho();
-    });
-  }
-
-  _vinculaItensCarrinho() {
-    var index = widget.controller.itens
-        .indexWhere((element) => element.codigo == widget.catalogoModel.codigo);
-    if (index >= 0) {
-      if (index >= 0) {
-        quantidade.value = widget.controller.itens[index].quantidade;
-      }
-    } else {
-      quantidade.value = 0;
-    }
-  }
-
-  _removeItem() {
-    widget.controller.removeItem(widget.catalogoModel.codigo!);
-  }
-
-  _addItem() {
-    widget.controller.addItem(widget.catalogoModel, 1);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      const SizedBox(
-        height: 20,
       ),
-      ValueListenableBuilder<double>(
-        valueListenable: quantidade,
-        builder: (context, qtd, _) {
-          return Text(
-            qtd.toStringAsFixed(0),
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-          );
-        },
-      ),
-      const SizedBox(height: 10),
-      acoes(),
-      const SizedBox(
-        height: 20,
-      ),
-    ]);
-  }
-
-  Row acoes() {
-    return Row(
-      children: [
-        Botao(
-          size: const Size(60, 60),
-          cor: Colors.green,
-          icone: Icons.add,
-          onClick: () {
-            _addItem();
-          },
-        ),
-        const SizedBox(width: 30),
-        Botao(
-          size: const Size(60, 60),
-          icone: Icons.remove,
-          cor: Colors.red,
-          onClick: () {
-            _removeItem();
-          },
-        ),
-      ],
     );
   }
 }

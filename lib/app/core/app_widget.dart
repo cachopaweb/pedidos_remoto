@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/carinho_controller.dart';
-import '../controllers/usuario_controller.dart';
 import '../pages/carrinho_page.dart';
 import '../pages/catalogo_page.dart';
 import '../pages/finalizacao_page.dart';
@@ -18,9 +17,6 @@ class AppWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => UsuarioController(),
-        ),
         ChangeNotifierProvider(
           create: (context) => CarrinhoController(
             PedidoRepository(),
@@ -51,7 +47,7 @@ class AppWidget extends StatelessWidget {
         routes: {
           '/': (context) => const SplashPage(),
           '/login': (context) => const LoginPage(),
-          '/catalogo': (context) => CatalogoPage(),
+          '/catalogo': (context) => const CatalogoPage(),
           '/carrinho': (context) => const CarrinhoPage(),
           '/finalizacao': (context) => const FinalizacaoPage(),
         },

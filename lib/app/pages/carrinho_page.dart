@@ -67,12 +67,9 @@ class CarrinhoPageState extends State<CarrinhoPage> {
       isLoading = true;
     });
 
-    final usuarioLogado =
-        Provider.of<UsuarioController>(context, listen: false).usuarioLogado;
-
     try {
       final success = await controller.inserePedido(
-        usuarioLogado,
+        UsuarioController.instance.usuarioLogado,
         clienteController.value,
         enderecoController.text,
         tipoPgmController.value,

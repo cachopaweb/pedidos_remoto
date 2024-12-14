@@ -192,7 +192,6 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<UsuarioController>(context, listen: false);
     final Size size = MediaQuery.of(context).size;
 
     return SafeArea(
@@ -210,7 +209,7 @@ class LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 10),
                     Container(
                       margin: const EdgeInsets.only(left: 10, right: 10),
-                      child: _telaLogin(controller, size),
+                      child: _telaLogin(UsuarioController.instance, size),
                     ),
                   ],
                 )),
