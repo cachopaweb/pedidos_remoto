@@ -121,7 +121,7 @@ class ComboBoxTipoPgm extends StatefulWidget {
 }
 
 class _ComboBoxTipoPgmState extends State<ComboBoxTipoPgm> {
-  var listaTipoPgm = <TipoPgmModel>[];
+  var listaTipoPgm = <TipoPgmModel>[TipoPgmModel.empty()];
   late final TipoPgmRepository tipoPgmRepository;
   bool carregando = false;
 
@@ -141,6 +141,7 @@ class _ComboBoxTipoPgmState extends State<ComboBoxTipoPgm> {
       final lista = await tipoPgmRepository.getTipoPgms();
 
       setState(() {
+        listaTipoPgm.clear();
         listaTipoPgm = lista.where((e) => e.tipo == 'R').toList();
         carregando = false;
       });
@@ -165,7 +166,7 @@ class _ComboBoxTipoPgmState extends State<ComboBoxTipoPgm> {
 
   @override
   Widget build(BuildContext context) {
-    var descricao = 'DINHEIRO';
+    var descricao = listaTipoPgm[0].descricao;
     if (listaTipoPgm.isNotEmpty) {
       final result = listaTipoPgm.firstWhere(
         (e) => e.descricao == widget.tipoPgmSelecionado.value.descricao,

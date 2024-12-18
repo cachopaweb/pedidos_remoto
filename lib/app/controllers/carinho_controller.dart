@@ -113,6 +113,7 @@ class CarrinhoController extends ChangeNotifier {
         quantidade: quantidade,
         valor: catalogo.precoVenda,
         nome: catalogo.produto!.nome!,
+        codPro: catalogo.codProduto!,
       );
       _itens.add(itemCarrinho);
     } else {
@@ -171,7 +172,7 @@ class CarrinhoController extends ChangeNotifier {
     itens = _itens
         .map(
           (e) => ItensPedido(
-            pro: e.codigo,
+            pro: e.codPro,
             nome: e.nome,
             quantidade: e.quantidade,
             ped: pedido.codigo,

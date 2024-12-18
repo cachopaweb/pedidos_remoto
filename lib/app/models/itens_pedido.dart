@@ -28,7 +28,7 @@ class ItensPedido {
 
   Map<String, dynamic> toMap() => {
         'codigo': codigo,
-        'Pro': pro,
+        'pro': pro,
         'quantidade': quantidade,
         'valor': valor,
         'ped': ped,
